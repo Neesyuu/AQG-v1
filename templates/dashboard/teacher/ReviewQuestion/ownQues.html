@@ -59,8 +59,8 @@
     <tbody>
     {% for question in all %}
     <tr>
-        <th scope="row">{{ question.sno }}</th>
-        <td><a class="list-group-items list-group-item-action" href="/editMathSelected">{{ question.Question }}</a>
+        <th scope="row">{{ question.pk }}</th>
+        <td><a class="list-group-items list-group-item-action" href="/teacher/dashboard/editSelected/{{ question.pk }}">{{ question.Question }}</a>
         </td>
         <td>{{ question.teacherName }}</td>
     </tr>

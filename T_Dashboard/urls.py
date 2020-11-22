@@ -16,4 +16,6 @@ urlpatterns = [
     path('selsubReview/M/', views.allMyMath, name='myMathReview'),
     path('selsubReview/A/', views.allQues, name='allQuesReview'),
     path('selsubReview/O/', views.allMyQues, name='myQuesReview'),
+    path('editSelected/<int:id>', views.editQues, name='EditMyQues'),
+    path('deleteSelected/<int:id>', views.deleteQues, name='DeleteMyQues'),
 ]

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from aqg.decorators import teacher_only
 from question.models import Subject, AllQues, MathQues, PhysicsQues, EnglishQues, ChemistryQues
@@ -349,3 +349,77 @@ def allQues(request):
     zipping = zip(range(1,c+1), all)
     data = {'all': all, 'count': c, 'zip':zipping}
     return render(request, 'dashboard/teacher/ReviewQuestion/allQuesColl.html', data)
+
+
+# ------------------------------------ EDIT -------------------------------------------
+
+def editQues(request, id):
+    question = AllQues.objects.get(pk=id)
+    print(question)
+    QuesID = question.subID
+    data = {'data': question, 'QuesID':id}
+
+    if request.method == 'POST':
+        question = request.POST.get('questionArea')
+        optA = request.POST.get('optA')
+        optB = request.POST.get('optB')
+        optC = request.POST.get('optC')
+        optD = request.POST.get('optD')
+        ans = request.POST.get('answer')
+        mark = request.POST.get('mark')
+        level = request.POST.get('level')
+
+        if ans == 'optA':
+            ans = optA
+        elif ans == 'optB':
+            ans = optB
+        elif ans == 'optC':
+            ans = optC
+        elif ans == 'optD':
+            ans = optD
+
+        timeToSolve = timeCal(mark, level)
+
+        AllQues.objects.filter(pk=id).update(Question=question, optA=optA, optB=optB, optC=optC, optD=optD, ans=ans, mark=mark,
+                           level=level, timeStamp=now(), timeToSolve=timeToSolve, moreTimeTaken=0, lessTimeTaken=0, modMark = mark, modLevel= level)
+        if QuesID == 'P':
+            PhysicsQues.objects.filter(intQuesID=id).update(Question=question, optA=optA, optB=optB, optC=optC, optD=optD, ans=ans,
+                                                 mark=mark,
+                                                 level=level, timeStamp=now(), timeToSolve=timeToSolve, moreTimeTaken=0,
+                                                 lessTimeTaken=0, modMark=mark, modLevel=level)
+        elif QuesID == 'C':
+            ChemistryQues.objects.filter(intQuesID=id).update(Question=question, optA=optA, optB=optB, optC=optC,
+                                                            optD=optD, ans=ans,
+                                                            mark=mark,
+                                                            level=level, timeStamp=now(), timeToSolve=timeToSolve,
+                                                            moreTimeTaken=0,
+                                                            lessTimeTaken=0, modMark=mark, modLevel=level)
+        elif QuesID == 'M':
+            MathQues.objects.filter(intQuesID=id).update(Question=question, optA=optA, optB=optB, optC=optC,
+                                                            optD=optD, ans=ans,
+                                                            mark=mark,
+                                                            level=level, timeStamp=now(), timeToSolve=timeToSolve,
+                                                            moreTimeTaken=0,
+                                                            lessTimeTaken=0, modMark=mark, modLevel=level)
+        else:
+            EnglishQues.objects.filter(intQuesID=id).update(Question=question, optA=optA, optB=optB, optC=optC,
+                                                            optD=optD, ans=ans,
+                                                            mark=mark,
+                                                            level=level, timeStamp=now(), timeToSolve=timeToSolve,
+                                                            moreTimeTaken=0,
+                                                            lessTimeTaken=0, modMark=mark, modLevel=level)
+
+        messages.success(request, 'Edit Successful')
+        return redirect('/teacher/dashboard/selsubReview/')
+
+
+    return render(request, 'dashboard/teacher/ReviewQuestion/edit/editQues.html', data)
+
+
+def deleteQues(request, id):
+    question = AllQues.objects.get(pk=id)
+    print(id)
+    question.delete()
+    messages.error(request, 'Delete Successful')
+    return redirect('/teacher/dashboard/selsubReview/')
+

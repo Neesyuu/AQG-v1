@@ -28,6 +28,7 @@ urlpatterns = [
     path('', include('mainSel.urls'), name='mainH'),
     path('home/', include('Home.urls'), name='home'),
     path('teacher/', include('T_register.urls'), name='TeacherInfo'),
+    path('loadME/', include('question.urls'), name='TORefresh'),
 
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),

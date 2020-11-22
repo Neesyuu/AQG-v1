@@ -826,9 +826,35 @@ def levelUpDecide(UserId, levelId):
         print(f'You are not ready. '+ str(levelId))
 
 
-def expertV1(request):
-    data1 = PerQuestionForCertificates
-    data2 = AllQues
+
+def reCalculate(mark, time):
+    nTime = round(time)
+    if mark == 2:
+        if nTime > 2:
+            return 3
+        elif nTime > 1:
+            return 2
+        else:
+            return 1
+    else:
+        if time > 1:
+            return 3
+        elif nTime > 0.5:
+            return 2
+        else:
+            return 1
+
+
+def reLeveling(mySub, id, level):
+    AllQues.objects.filter(pk=id).update(level=level)
+    if mySub == 'P':
+        PhysicsQues.objects.filter(intQuesID=id).update(level=level)
+    elif mySub == 'C':
+        ChemistryQues.objects.filter(intQuesID=id).update(level=level)
+    elif mySub == 'M':
+        MathQues.objects.filter(intQuesID=id).update(level=level)
+    elif mySub == 'E':
+        EnglishQues.objects.filter(intQuesID=id).update(level=level)
 
 
 

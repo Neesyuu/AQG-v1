@@ -29,6 +29,8 @@ git commit -m "first commit"
 git branch -M master
 git remote add origin https://github.com/Neesyuu/AQG-v1.git
 git push -u origin master
+git push -f origin master
+
                 
 …or push an existing repository from the command line
 git remote add origin https://github.com/Neesyuu/AQG-v1.git
