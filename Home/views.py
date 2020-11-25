@@ -8,6 +8,10 @@ from django.http import JsonResponse
 from aqg.decorators import student_only, role_required
 from django.contrib.auth.models import User
 
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+import string
+
 
 # Create your views here.
 
@@ -59,7 +63,7 @@ data1 = ''
 def testLoadCache(request):
     global data1
     lol = request.POST.get('ans')
-    data1 = 'q'+lol
+    data1 = lol
     return HttpResponse('Good Job')
 
 
@@ -67,4 +71,51 @@ def testLoadCache(request):
 def testWriteCache(request):
     global data1
     print(data1)
-    return JsonResponse({'lol':data1})
+    txt1 = 'What is your name?'
+    data = cosineSim(txt1, data1)
+    return JsonResponse({'lol':data})
+
+
+def cosineSim(d1, d2):
+    print(d1)
+    print(d2)
+    remPunD1 = remove_punct(d1)
+    remPunD2 = remove_punct(d2)
+    cosineSimulation = similarityMeasure(remPunD1, remPunD2)
+    print('cosineSimulation')
+    print(cosineSimulation)
+    return cosineSimulation
+
+
+
+def similarityMeasure(d1, d2):
+    x = d1.lower()
+    y = d2.lower()
+    tok_x = word_tokenize(x)
+    tok_y = word_tokenize(y)
+    sw = stopwords.words('english')
+    l1 = []
+    l2 = []
+    x_set = {w for w in tok_x if not w in sw}
+    y_set = {w for w in tok_y if not w in sw}
+    rvector = x_set.union(y_set)
+    for w in rvector:
+        if w in x_set:
+            l1.append(1)  # create a vector
+        else:
+            l1.append(0)
+        if w in y_set:
+            l2.append(1)
+        else:
+            l2.append(0)
+    c = 0
+    for i in range(len(rvector)):
+        c += l1[i] * l2[i]
+    cosine = c / float((sum(l1) * sum(l2)) ** 0.5)
+    return cosine
+
+
+def remove_punct(txt):
+    txt_nopunt="".join([c for c in txt if c not in string.punctuation])
+    return txt_nopunt
+
