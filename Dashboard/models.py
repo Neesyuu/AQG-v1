@@ -56,3 +56,20 @@ class PerStudentCache(models.Model):
 
     def __str__(self):
         return str(self.User) + ' | ' + str(self.IntQuesID) + ' | ' + str(self.Solved) + ' | ' + str(self.Did) + ' | ' + str(self.TimeTaken)
+
+
+class Bookmarked(models.Model):
+    sno = models.AutoField(primary_key=True)
+    User = models.ForeignKey(User, on_delete=models.CASCADE)
+    QuesID = models.CharField(max_length=255, blank=True)
+    IntQuesID = models.CharField(max_length=255, null=True)
+    Question = models.TextField()
+    optA = models.CharField(max_length=255, blank=True)
+    optB = models.CharField(max_length=255, blank=True)
+    optC = models.CharField(max_length=255, blank=True)
+    optD = models.CharField(max_length=255, blank=True)
+    ans = models.CharField(max_length=255, blank=True)
+
+
+    def __str__(self):
+        return str(self.User) + ' | ' + str(self.IntQuesID) + ' | ' + str(self.Question)

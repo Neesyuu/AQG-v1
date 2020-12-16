@@ -13,6 +13,7 @@
 
 {% load static %}
 <script src="{% static 'qBankScript.js' %}"></script>
+<script src="{% static 'Bookmark.js' %}"></script>
 
 <style>
     .jumbotronMine {
@@ -81,10 +82,10 @@
             </div>
             <div align="right" class="col">
                 <h5>
+
                     {{ dataz.number }}/{{ noq }} &nbsp;
-                    <a href="#">
-                        <i class="fas fa-bookmark"></i>
-                    </a>
+
+                    <button onclick="bookQues()" class="fas fa-bookmark" id="bookmark_button" style="padding: 0;border: none;background: none; color:grey"></button>
                 </h5>
             </div>
         </div>
@@ -93,6 +94,7 @@
 
     <div class="jumbotronMine">
         {% for data in dataz %}
+        <input name="intqno_tag" value="{{ data.intQuesID.pk }}" hidden>
         <h1 class="display-6">{{ dataz.number }}. {{ data.Question }}</h1>
         <p class="lead"></p>
         <hr class="my-4">

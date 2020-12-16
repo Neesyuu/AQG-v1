@@ -18,4 +18,6 @@ urlpatterns = [
     path('selsubReview/O/', views.allMyQues, name='myQuesReview'),
     path('editSelected/<int:id>', views.editQues, name='EditMyQues'),
     path('deleteSelected/<int:id>', views.deleteQues, name='DeleteMyQues'),
+    path('testLoadCache/', views.testLoadCache, name='testLoadCache'),
+    path('testWriteCache/', views.testWriteCache, name='testWriteCache'),
 ]

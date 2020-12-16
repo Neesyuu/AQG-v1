@@ -13,6 +13,10 @@ $(document).ready(function(){
         console.log(textH);
         var postUrl = "http://127.0.0.1:8000/home/testLoadCache/";
         var postUrl1 = "http://127.0.0.1:8000/home/testWriteCache/";
+        var selMark = $("#mark");
+        var selLevel = $("#level");
+        var optMark = selMark.options;
+        var optLevel = selLevel.options;
         $.ajax({
             url: postUrl,
             type: 'POST',
@@ -32,13 +36,17 @@ $(document).ready(function(){
             dataType: 'json',
             success: function(response){
                 console.log('You are shit 2')
-                console.log(response.lol)
+                console.log(response.mark)
                 var temp = ''
-                var temp = "<th scope='row'>2</th><td>"+response.lol+"</td><td>"+response.lol+"</td>"
+                var temp = "<th scope='row'>2</th><td>"+response.mark+"</td><td>"+response.level+"</td>"
                 $("#trHere").html(temp);
+                $('#mark option:contains(' + response.mark + ')').prop({selected: true});
+                $('#level option:contains(' + response.level + ')').prop({selected: true});
                 }
 
         });
+
+
     });
 });
 
@@ -47,6 +55,19 @@ $(document).ready(function(){
 <body>
 <p><input id="myInput" placeholder="Type something..." type="text"></p>
 <div id="result"></div>
+<br>
+<select class="custom-select" id="mark" name="mark">
+                                    <option selected>Choose...</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                </select>
+
+<select class="custom-select" id="level" name="level">
+                                    <option selected>Choose...</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
 <table class="table">
     <thead>
     <tr>
@@ -66,6 +87,8 @@ $(document).ready(function(){
 
     </tr>
     </tbody>
+
 </table>
+
 </body>
 </html>

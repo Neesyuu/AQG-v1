@@ -1,6 +1,4 @@
 To DO:
-
-- implement cosine similarity
 - Certificate
 - Complete UI Re-Design
 
@@ -23,6 +21,7 @@ Done
 - display one question per page at a time
 - add time for each question
 - make database table for each student where his/her achievements, question time, etc are stored.
+- implement cosine similarity
 
 …or create a new repository on the command line
 echo "# AQG-v1" >> README.md

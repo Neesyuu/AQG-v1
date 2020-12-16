@@ -12,7 +12,7 @@
 {% block body %}
 
 {% load static %}
-<script src="{% static 'qBankScript.js' %}"></script>
+<script src="{% static 'CerfScript.js' %}"></script>
 
 <style>
     .jumbotronMine {
@@ -82,9 +82,8 @@
             <div align="right" class="col">
                 <h5>
                     {{ dataz.number }}/{{ noq }} &nbsp;
-                    <a href="#">
-                        <i class="fas fa-bookmark"></i>
-                    </a>
+                    <input name="qno_tag" value="{{ dataz.number }}" hidden>
+                    <input name="intqno_tag" value="{{ dataz.IntQuesID }}" hidden>
                 </h5>
             </div>
         </div>
@@ -161,9 +160,7 @@
 
     </div>
     <div align="center" class="paginator">
-        {% if dataz.has_previous %}
-        <a class="btn btn-success btn-lg" href="?page={{ dataz.previous_page_number }}" style="float: left;">Prev.</a>
-        {% endif %}
+
         <div>
             <button class="btn btn-success btn-lg" id="save_ans" style="float: right;">Submit</button>
         </div>

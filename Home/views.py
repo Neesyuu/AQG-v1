@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required, PermissionDenied
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from question.models import PhysicsQues, AllQues
 
 from aqg.decorators import student_only, role_required
 from django.contrib.auth.models import User
@@ -56,6 +57,8 @@ def handleSLogout(request):
 
 
 def loadLive(request):
+    global intCosData
+    intCosData = 0
     return render(request, 'test/testLive.html')
 
 data1 = ''
@@ -66,24 +69,45 @@ def testLoadCache(request):
     data1 = lol
     return HttpResponse('Good Job')
 
+intCosData = 0
 
 @csrf_exempt
 def testWriteCache(request):
-    global data1
+    global data1, intCosData
     print(data1)
-    txt1 = 'What is your name?'
-    data = cosineSim(txt1, data1)
-    return JsonResponse({'lol':data})
+    mark = 0
+    level = 0
+    QuesData = AllQues.objects.all()
+    for i in QuesData:
+        cosData = cosineSim(i.Question, data1)
+        if cosData != 0.0:
+            if cosData >= intCosData:
+                intCosData = cosData
+                mark = i.mark
+                print('mark')
+                print(mark)
+                level = i.level
+                print('level')
+                print(level)
+                print(i.Question)
+                print(cosData)
+
+
+    print('------------------------------')
+    # txt1 = 'What is your name?'
+    # data = cosineSim(txt1, data1)
+    #return JsonResponse({'lol': '404'})
+    return JsonResponse({'mark': mark, 'level': level})
 
 
 def cosineSim(d1, d2):
-    print(d1)
-    print(d2)
+    # print(d1)
+    # print(d2)
     remPunD1 = remove_punct(d1)
     remPunD2 = remove_punct(d2)
     cosineSimulation = similarityMeasure(remPunD1, remPunD2)
-    print('cosineSimulation')
-    print(cosineSimulation)
+    # print('cosineSimulation')
+    # print(cosineSimulation)
     return cosineSimulation
 
 

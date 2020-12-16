@@ -18,7 +18,7 @@ function saveans(){
     var anslist = []
     console.log('I am IN');
     var ans = $("input:radio:checked").val();
-
+    var ques_tag = $("input[name$='qno_tag']").val();
 
 //    for (i=0; i<e.length; i++){
 //        if(e[i].type=="radio"){
@@ -27,12 +27,12 @@ function saveans(){
 //            }
 //        }
 //    }
-    var postUrl = "http://127.0.0.1:8000/home/dashboard/saveQans";
+    var postUrl = "http://127.0.0.1:8000/home/dashboard/savemyans";
     var req = new XMLHttpRequest();
     $.ajax({
         url: postUrl,
         type: 'POST',
-        data: {'ans': ans, 'time':keeper},
+        data: {'ans': ans, 'time':keeper, 'ques_tag':ques_tag},
         traditional: true,
         dataType: 'html',
         success: function(result){

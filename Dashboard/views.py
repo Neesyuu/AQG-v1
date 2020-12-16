@@ -8,7 +8,7 @@ from aqg.decorators import student_only
 from Register.models import UserDetail
 import re, random
 from django.core.paginator import Paginator
-from Dashboard.models import PerStudentData, levelUpDec, PerStudentCache, PerQuestionForCertificates
+from Dashboard.models import PerStudentData, levelUpDec, PerStudentCache, PerQuestionForCertificates, Bookmarked
 from question.models import Subject, AllQues, MathQues, PhysicsQues, EnglishQues, ChemistryQues
 from django.http import JsonResponse
 
@@ -57,6 +57,65 @@ def dashboardView(request):
                 i.delete()
 
     return render(request, 'dashboard/student/dashHome.html')
+
+
+def blogs(request):
+    return render(request, 'dashboard/blogs.html')
+
+def resources(request):
+    return render(request, 'dashboard/Resources/all.html')
+
+def resPhy(request):
+    return render(request, 'dashboard/Resources/Physics.html')
+
+def resChe(request):
+    return render(request, 'dashboard/Resources/Chemistry.html')
+
+def resMath(request):
+    return render(request, 'dashboard/Resources/Math.html')
+
+def resEng(request):
+    return render(request, 'dashboard/Resources/English.html')
+
+def bookmark(request):
+    booked = Bookmarked.objects.filter(User=request.user)
+    lenOfBook = len(booked)
+    num = 0
+    paramss = {'booked':booked, 'num':num}
+    return render(request, 'dashboard/student/bookmark.html', paramss)
+
+@csrf_exempt
+def book(request):
+    ques_tag = request.POST.get('ques_tag')
+    print(ques_tag)
+    userMe = request.user
+    print(userMe)
+    print(userMe.id)
+    allQuestion = AllQues.objects.filter(pk=ques_tag)
+    booked = Bookmarked.objects.filter(User=userMe,IntQuesID=ques_tag)
+    print(allQuestion)
+    print('booked')
+    print(booked)
+    if not booked:
+        print('lol entered')
+        for i in allQuestion:
+            book = Bookmarked(User=userMe,QuesID=i.subjID,IntQuesID=i.pk,Question=i.Question,optA=i.optA,optB=i.optB,optC=i.optC,optD=i.optD,ans=i.ans)
+            book.save()
+    else:
+        print('I am here')
+        pass
+    return HttpResponse('DOne')
+
+
+@csrf_exempt
+def delbook(request):
+    quesID = request.POST.get('quesID')
+    print('quesID')
+    print(quesID)
+    toDel = Bookmarked.objects.filter(User=request.user, IntQuesID=int(quesID))
+    print(toDel)
+    toDel.delete()
+    return render(request, 'dashboard/student/bookmark.html')
 
 
 @login_required
@@ -442,14 +501,40 @@ def dataz(request):
     return HttpResponse(message)
 
 @csrf_exempt
+def saveQans(request):
+    global perAns
+    global timekeeper
+    data = request.POST.get('ans')
+    timerr = request.POST.get('time')
+    ques_tag = request.POST.get('ques_tag')
+    print(ques_tag)
+    print('DATAAAAA')
+    print(data)
+    print(timerr)
+
+    #PerStudentCache.objects.filter(Did=int(ques_tag)-1).update(UserAns=data, TimeTaken=timerr)
+
+    perAns.append(data)
+    timekeeper.append(timerr)
+
+    print('lst')
+    print(perAns)
+    message = 'Received Hai message'
+    return HttpResponse(message)
+
+@csrf_exempt
 def save1ans(request):
     global perAns
     global timekeeper
     data = request.POST.get('ans')
     timerr = request.POST.get('time')
+    ques_tag = request.POST.get('ques_tag')
+    print(ques_tag)
     print('DATAAAAA')
     print(data)
     print(timerr)
+
+    PerStudentCache.objects.filter(Did=int(ques_tag)-1).update(UserAns=data, TimeTaken=timerr)
 
     perAns.append(data)
     timekeeper.append(timerr)
@@ -519,20 +604,27 @@ def CerfResult(request):
     byNum = len(mainAns)
     print(byNum)
 
-    for i in DataBase:
-        print(i.Did)
-    no =0
-    for j in range(len(perAns)):
-        print('hello3')
-        if perAns[j] == mainAns[j]:
-            print('I ma here hai guyz')
-            PerStudentCache.objects.filter(User=userMe.id, Did=no).update(UserAns=perAns[j], Solved=True, TimeTaken=timekeeper[j])
+    #no = 0
+    for d in DataBase:
+        if (d.UserAns == d.ans):
+            PerStudentCache.objects.filter(User=userMe.id).update(Solved=True)
             score += 1
-            no = no+1
-        else:
-            print('Ma yaha pugye I ma here hai guyz')
-            PerStudentCache.objects.filter(User=userMe.id, Did=no).update(TimeTaken=timekeeper[j])
-            no = no+1
+            #no = no + 1
+
+    # for i in DataBase:
+    #     print(i.Did)
+    #
+    # for j in range(len(perAns)):
+    #     print('hello3')
+    #     if perAns[j] == mainAns[j]:
+    #         print('I ma here hai guyz')
+    #         PerStudentCache.objects.filter(User=userMe.id, Did=no).update(UserAns=perAns[j], Solved=True, TimeTaken=timekeeper[j])
+    #         score += 1
+    #         no = no+1
+    #     else:
+    #         print('Ma yaha pugye I ma here hai guyz')
+    #         PerStudentCache.objects.filter(User=userMe.id, Did=no).update(TimeTaken=timekeeper[j])
+    #         no = no+1
 
     name1 = PerStudentCache.objects.filter(User=userMe.id)
     name3 = PerQuestionForCertificates.objects.all()
@@ -586,20 +678,20 @@ def callMeForQues(level):
     if glevel == 1:
         print('level1')
         PhyQuesCall(1,1,11)
-        PhyQuesCall(1,2,2)
-        PhyQuesCall(2,1,16)
+        # PhyQuesCall(1,2,2)
+        # PhyQuesCall(2,1,16)
 
-        CheQuesCall(1,1,12)
-        CheQuesCall(1,2,4)
-        CheQuesCall(2,1,4)
-
-        MathQuesCall(1,1,11)
-        MathQuesCall(1,2,2)
-        MathQuesCall(2,1,16)
-
-        EngQuesCall(1,1,14)
-        EngQuesCall(1,2,4)
-        EngQuesCall(2,1,4)
+        # CheQuesCall(1,1,12)
+        # CheQuesCall(1,2,4)
+        # CheQuesCall(2,1,4)
+        #
+        # MathQuesCall(1,1,11)
+        # MathQuesCall(1,2,2)
+        # MathQuesCall(2,1,16)
+        #
+        # EngQuesCall(1,1,14)
+        # EngQuesCall(1,2,4)
+        # EngQuesCall(2,1,4)
 
         print('DataToShow1')
         print(len(DataToShow1))
@@ -802,16 +894,17 @@ def levelUpDecide(UserId, levelId):
     data = levelUpDec.objects.all()
     count = 0
     for i in data:
-        print('1')
+        #print('1')
         if i.User == UserId:
-            print('2')
-            print(i.level)
-            print(levelId)
+            #print('2')
+            print(f'i.level : '+ str(i.level))
+            print(f'levelId : '+ str(levelId))
             if int(i.level) == int(levelId):
-                print('3')
+                #print('3')
                 if int(i.percentage) >= 80:
                     print('I am in')
                     count = count + 1
+                    print(f'count : ' + str(count))
     if count >= 5:
         print('Ready to Level Up to ')
         print(int(levelId)+1)
