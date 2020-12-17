@@ -63,7 +63,7 @@ def blogs(request):
     return render(request, 'dashboard/blogs.html')
 
 def resources(request):
-    return render(request, 'dashboard/Resources/all.html')
+    return render(request, 'dashboard/Resources/All.html')
 
 def resPhy(request):
     return render(request, 'dashboard/Resources/Physics.html')
